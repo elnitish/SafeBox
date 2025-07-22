@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeBox - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login Form Side -->
+        <div class="login-side">
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Connect your wallet to access your secure decentralized storage</p>
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <form action="/login" method="post" id="loginForm">
+                <div class="form-group">
+                    <button type="button" id="connectBtn" class="btn btn-meta" onclick="connectWallet()">
+                        <i class="fab fa-ethereum"></i>
+                        Connect MetaMask
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label for="walletDisplay" class="form-label">Wallet Address</label>
+                    <input type="text" name="address" id="walletDisplay" class="form-input wallet-display" 
+                           placeholder="Click 'Connect MetaMask' to fetch your wallet address" readonly>
+                </div>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="loginBtn" disabled>
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to SafeBox
+                    </button>
+                </div>
+            </form>
+
+            <div class="back-link">
+                <a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+
+        <!-- Brand Side -->
+        <div class="brand-side">
+            <div class="brand-content">
+                <div class="logo">SafeBox</div>
+                <h2 class="brand-title">Secure. Decentralized. Yours.</h2>
+                <p class="brand-description">
+                    Experience the future of file storage with blockchain-powered security and IPFS technology.
+                </p>
+                <ul class="features-list">
+                    <li>
+                        <i class="fas fa-shield-alt"></i>
+                        <span>End-to-end encryption</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-network-wired"></i>
+                        <span>IPFS decentralized storage</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-link"></i>
+                        <span>Blockchain metadata</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-globe"></i>
+                        <span>Global access</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let button = document.getElementById("connectBtn");
+        let loginBtn = document.getElementById("loginBtn");
+        let statusMessage = document.getElementById("statusMessage");
+
+        button.addEventListener("click", async function (e) {
+            e.preventDefault();
+        });
+
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        async function connectWallet() {
+            console.log("Connecting to MetaMask...");
+            
+            if (window.ethereum) {
+                try {
+                    // Request account access
+                    const accounts = await window.ethereum.request({ 
+                        method: 'eth_requestAccounts' 
+                    });
+                    
+                    const walletAddress = accounts[0];
+                    document.getElementById("walletDisplay").value = walletAddress;
+                    loginBtn.disabled = false;
+                    
+                    showStatus("Wallet connected successfully!", "success");
+                    
+                    // Update button text
+                    button.innerHTML = '<i class="fas fa-check"></i> Connected';
+                    button.style.background = '#10b981';
+                    
+                } catch (error) {
+                    console.error("Error connecting to MetaMask:", error);
+                    showStatus("Failed to connect wallet. Please try again.", "error");
+                }
+            } else {
+                showStatus("MetaMask is not installed. Please install MetaMask to proceed.", "error");
+            }
+        }
+
+        // Handle form submission
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            const walletAddress = document.getElementById("walletDisplay").value;
+            if (!walletAddress || walletAddress === "Click 'Connect MetaMask' to fetch your wallet address") {
+                e.preventDefault();
+                showStatus("Please connect your MetaMask wallet first.", "error");
+            }
+        });
+
+        // Check if MetaMask is already connected
+        window.addEventListener('load', async function() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ 
+                        method: 'eth_accounts' 
+                    });
+                    
+                    if (accounts.length > 0) {
+                        const walletAddress = accounts[0];
+                        document.getElementById("walletDisplay").value = walletAddress;
+                        loginBtn.disabled = false;
+                        button.innerHTML = '<i class="fas fa-check"></i> Connected';
+                        button.style.background = '#10b981';
+                    }
+                } catch (error) {
+                    console.error("Error checking MetaMask connection:", error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

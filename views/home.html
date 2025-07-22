@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeBox - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="home.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">SafeBox</div>
+            <div class="nav-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span id="userAddress">Loading...</span>
+                </div>
+                <a href="/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Welcome to Your SafeBox</h1>
+            <p class="dashboard-subtitle">Manage your secure, decentralized files</p>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status-message"></div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-file"></i>
+                    </div>
+                </div>
+                <div class="stat-number" id="totalFiles">0</div>
+                <div class="stat-label">Total Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                </div>
+                <div class="stat-number" id="totalSize">0 MB</div>
+                <div class="stat-label">Storage Used</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Encrypted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-number" id="lastUpload">Never</div>
+                <div class="stat-label">Last Upload</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h2 class="section-title">Upload New File</h2>
+                <form id="uploadForm" action="/fileUpload" method="POST" enctype="multipart/form-data">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon" id="uploadIcon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text" id="uploadText">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            <small>Supports all file types up to 100MB</small>
+                        </div>
+                        <input type="file" name="file" id="fileInput" class="file-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
+                        <i class="fas fa-upload"></i>
+                        Upload File
+                    </button>
+                </form>
+            </div>
+
+            <!-- Files Section -->
+            <div class="files-section">
+                <div class="files-header">
+                    <h2 class="section-title">Your Files</h2>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search files..." id="searchInput">
+                        <button type="submit" id="searchBtn" class="btn btn-primary "
+                            onclick="filterSearchAndDisplay()"> Search</button>
+                    </div>
+                </div>
+                <div class="file-list" id="fileList">
+                    <div style="text-align: center; color: var(--gray); padding: 2rem;">
+                        <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>No files uploaded yet</p>
+                        <p style="font-size: 0.875rem;">Upload your first file to get started</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        let walletAddress;
+        let contract;
+        let uploadArea = document.getElementById("uploadArea");
+        let fileInput = document.getElementById("fileInput");
+        let uploadBtn = document.getElementById("uploadBtn");
+        async function fetchAddress() {
+            if (!window.ethereum) {
+                alert("No wallet found");
+                window.location.href = "/";
+            }
+            try {
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+
+                walletAddress = accounts[0];
+                let userAddress = document.getElementById("userAddress");
+                userAddress.innerHTML = `Connected:- ${walletAddress}`;
+
+            } catch (error) {
+                console.error("Error connecting to MetaMask:", error);
+            }
+            fetchHomeDataAndDisplay();
+        }
+
+        uploadArea.addEventListener("click", () => {
+            fileInput.click();
+        });
+        fileInput.addEventListener("change", () => {
+            let file = fileInput.files[0];
+            console.log(file);
+            if (file) {
+                try {
+                    uploadBtn.disabled = false;
+                    if (!uploadBtn.disabled) console.log("Button turned on");
+                } catch (error) {
+                    console.error("Error in the upload button");
+                }
+                let uploadIcon = document.getElementById("uploadIcon");
+                let uploadText = document.getElementById("uploadText");
+                uploadIcon.innerHTML = `<div class="upload-icon">
+                    <i class="fas fa-check-circle" style="color: green;"></i>
+                        </div>`;
+                uploadText.innerHTML = `<div class="upload-text">
+                    <strong>File Selected</strong><br>
+                    <small>${file.name}</small>
+                    </div>`;
+                console.log(file);
+            }
+
+        });
+        let fileNames;
+        let fetchedData;
+        async function fetchHomeDataAndDisplay() {
+            let userToFetch = {
+                address: walletAddress,
+            };
+            console.log(userToFetch);
+            try {
+                fetchedData = await fetch("/homeData", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(userToFetch)
+                });
+                fetchedData = await fetchedData.json();
+                console.log(fetchedData);
+            } catch (err) {
+                console.log("error in fetching");
+                return;
+            }
+            fileNames = fetchedData.totalFileNames;
+            displayFiles(fileNames);
+            console.log(fetchedData.totalFiles);
+            let totalFiles = document.getElementById("totalFiles");
+            totalFiles.innerText = fetchedData.totalFiles;
+            let totalSize = document.getElementById("totalSize");
+            let sizeFetch = fetchedData.storageUsed;
+            sizeFetch = (sizeFetch / (1024 * 1024)).toFixed(2);
+            totalSize.innerText = `${sizeFetch} MB`;
+            let lastUpload = document.getElementById("lastUpload");
+            let lastUploadFetch = fetchedData.lastUpload;
+            console.log(lastUploadFetch);
+            let date = new Date(lastUploadFetch);
+            let defaultDate = new Date()
+            let formatted = date.toLocaleString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+            console.log(formatted);
+            if(formatted=="1 January 1970"){
+                lastUpload.innerText = "NEVER";
+            } else{
+                lastUpload.innerText = formatted;
+            }
+            
+        };
+        function displayFiles(filesToDisplay) {
+            fileList.innerHTML = filesToDisplay.map(file => ` <div class="file-item">
+                    <div class="file-details">
+                        <h4>${file}</h4>
+                        </div>
+                        <div class="file-actions">
+                            <button class="action-btn view" onclick="viewFile(${file})">
+                                <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="deleteFile(${file})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+        };
+
+        function filterSearchAndDisplay() {
+            let searchInput = document.getElementById("searchInput").value;
+            let query = searchInput.toLowerCase();
+            let matchedFiles = fileNames.filter(file => {
+                return file.toLowerCase().includes(query);
+            })
+            console.log(matchedFiles);
+            displayFiles(matchedFiles);
+        }
+
+        async function initContract() {
+            const contractData = await fetch("contractAddress.json");
+            const contractJson = await contractData.json();
+            let contractAddress = contractJson.Address;
+            const abiResponse = await fetch("abi/UserStorage.json");
+            const abiData = await abiResponse.json();
+            let contractABI = abiData.abi;
+
+            console.log(contractABI)
+            console.log(contractAddress);
+            let provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            signer = await provider.getSigner();
+            console.log(signer);
+            contract = new ethers.Contract(contractAddress, contractABI, signer)
+            console.log(contract);
+        }
+
+        initContract();
+
+
+        window.onload = fetchAddress;
+
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeBox - Upload Successful</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --dark: #1f2937;
+            --dark-light: #374151;
+            --gray: #6b7280;
+            --gray-light: #f3f4f6;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .success-card {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .success-header {
+            background: var(--gradient);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .success-content {
+            padding: 3rem 2rem;
+        }
+
+        .file-info {
+            background: var(--gray-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--success);
+        }
+
+        .file-info h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .file-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .file-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            max-width: 20%;
+        }
+
+        .file-detail i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .security-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .security-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-light);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .security-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .security-card h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .security-card h4 i {
+            color: var(--success);
+        }
+
+        .security-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .blockchain-info {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .blockchain-info h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blockchain-info h3 i {
+            color: var(--accent);
+        }
+
+        .blockchain-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .blockchain-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .blockchain-detail i {
+            color: var(--accent);
+            width: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-encrypted {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .status-decentralized {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .success-header {
+                padding: 2rem 1rem;
+            }
+
+            .success-title {
+                font-size: 2rem;
+            }
+
+            .success-content {
+                padding: 2rem 1rem;
+            }
+
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .file-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="success-card">
+            <!-- Success Header -->
+            <div class="success-header">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="success-title">File Upload Successful!</h1>
+                <p class="success-subtitle">Your file has been securely stored using blockchain and IPFS technology</p>
+            </div>
+
+            <!-- Success Content -->
+            <div class="success-content">
+                <!-- File Information -->
+                <div class="file-info">
+                    <h3><i class="fas fa-file-alt"></i> File Details</h3>
+                    <div class="file-details">
+                        <div class="file-detail">
+                            <i class="fas fa-file"></i>
+                            <span><strong>Filename:</strong>
+                                <%= fileName %>
+                            </span>
+                        </div>
+                        <div class="file-detail">
+                            <i class="fas fa-weight-hanging"></i>
+                            <span><strong>Size:</strong>
+                                <%= fileSize %>
+                            </span>
+                        </div>
+                        <div class="file-detail">
+                            <i class="fas fa-clock"></i>
+                            <span><strong>Upload Time:</strong>
+                                <%= uploadTime %>
+                            </span>
+                        </div>
+                        <div class="file-detail">
+                            <i class="fas fa-hashtag"></i>
+                            <span><strong>IPFS Hash:</strong>
+                                <%= ipfsHash %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Features Section -->
+                <div class="security-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Why SafeBox is the Safest Platform
+                    </h2>
+                    <div class="security-grid">
+                        <div class="security-card">
+                            <h4><i class="fas fa-lock"></i> End-to-End Encryption</h4>
+                            <p>Your files are encrypted with AES-256 encryption before being uploaded. Only you have
+                                access to the decryption keys, ensuring complete privacy and security.</p>
+                            <div class="status-badge status-encrypted">
+                                <i class="fas fa-check"></i>
+                                Encrypted
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <h4><i class="fas fa-network-wired"></i> IPFS Decentralized Storage</h4>
+                            <p>Files are stored on the InterPlanetary File System (IPFS), a peer-to-peer network that
+                                distributes your data across multiple nodes worldwide, eliminating single points of
+                                failure.</p>
+                            <div class="status-badge status-decentralized">
+                                <i class="fas fa-check"></i>
+                                Decentralized
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <h4><i class="fas fa-link"></i> Blockchain Metadata</h4>
+                            <p>File metadata is permanently stored on the Ethereum blockchain, providing immutable proof
+                                of ownership and creating an unchangeable audit trail.</p>
+                            <div class="status-badge status-success">
+                                <i class="fas fa-check"></i>
+                                Immutable
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <h4><i class="fas fa-user-shield"></i> Zero-Knowledge Architecture</h4>
+                            <p>We never have access to your files or encryption keys. The platform operates on a
+                                zero-knowledge basis, ensuring your data remains completely private.</p>
+                            <div class="status-badge status-success">
+                                <i class="fas fa-check"></i>
+                                Private
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <h4><i class="fas fa-globe"></i> Global Redundancy</h4>
+                            <p>Your files are automatically replicated across multiple IPFS nodes globally, ensuring
+                                high availability and protection against data loss.</p>
+                            <div class="status-badge status-success">
+                                <i class="fas fa-check"></i>
+                                Redundant
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <h4><i class="fas fa-fingerprint"></i> Cryptographic Verification</h4>
+                            <p>Every file is cryptographically signed and verified, ensuring data integrity and
+                                preventing any unauthorized modifications.</p>
+                            <div class="status-badge status-encrypted">
+                                <i class="fas fa-check"></i>
+                                Verified
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="/home" class="btn btn-primary">
+                        <i class="fas fa-home"></i>
+                        Back to Dashboard
+                    </a>
+                    <a href="/upload" class="btn btn-secondary">
+                        <i class="fas fa-upload"></i>
+                        Upload Another File
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script>
+    const fileData = {
+        fileName: "<%= fileName %>",
+        fileSize: "<%= fileSize %>",
+        uploadTime: "<%= uploadTime %>",
+        ipfsHash: "<%= ipfsHash %>",
+    };
+    let contract;
+    async function initContract() {
+        const contractData = await fetch("contractAddress.json");
+        const contractJson = await contractData.json();
+        let contractAddress = contractJson.Address;
+        const abiResponse = await fetch("abi/UserStorage.json");
+        const abiData = await abiResponse.json();
+        let contractABI = abiData.abi;
+
+        console.log(contractABI)
+        console.log(contractAddress);
+        let provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = await provider.getSigner();
+        console.log(signer);
+        contract = new ethers.Contract(contractAddress, contractABI, signer)
+        console.log(contract);
+        uploadToChain();
+    }
+    initContract();
+    let CID = fileData.ipfsHash;
+    let fileName = fileData.fileName;
+
+    async function uploadToChain() {
+        let tx = await contract.addCID(CID, fileName);
+        tx.wait();
+    }
+
+</script>
+
+</html>
