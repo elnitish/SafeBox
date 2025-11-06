@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node scripts/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,8 +12,9 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.1",
     "chai": "^4.3.10",
-    "hardhat": "^2.24.3"
+    "hardhat": "^2.22.10"
   },
   "dependencies": {
     "@pinata/sdk": "^2.1.0",

@@ -3,7 +3,7 @@ let fs = require("fs");
 let path = require("path");
 
 async function deploy() {
-    let fileContract = await ethers.getContractFactory("UserStorage");
+    let fileContract = await ethers.getContractFactory("SafeBoxStorage");
     let UserStorage = await fileContract.deploy();
     let [owner] = await ethers.getSigners();
 

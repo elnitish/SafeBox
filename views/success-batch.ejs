@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeBox - Upload Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background:#f5f7fb; margin:0; color:#111827; }
+        .container { max-width:1100px; margin: 0 auto; padding: 32px 20px; }
+        .title { font-size: 24px; font-weight: 700; margin: 12px 0 20px; }
+        .card { background:#fff; border:1px solid #e5e7eb; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+        .row { display:flex; align-items: center; gap: 12px; }
+        .meta { display:flex; flex-direction:column; gap:4px; flex:1; }
+        .name { font-weight:600; }
+        .small { color:#6b7280; font-size: 12px; }
+        .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-top: 8px; }
+        .badge { display:inline-flex; align-items:center; gap:6px; border-radius: 999px; padding:6px 10px; font-size:12px; }
+        .ok { background: rgba(16,185,129,0.12); color:#059669; }
+        .warn { background: rgba(239,68,68,0.12); color:#dc2626; }
+        .code { background:#f3f4f6; padding:4px 6px; border-radius:6px; word-break: break-all; }
+        .top { display:flex; align-items:center; justify-content: space-between; }
+        .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; border:1px solid #6366f1; color:#fff; background:#6366f1; text-decoration:none; font-weight:600; }
+        .back { background:#fff; color:#4f46e5; }
+        @media (max-width: 768px){ .grid { grid-template-columns: 1fr; } }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <div class="top">
+            <div class="title"><i class="fas fa-list-check"></i> Upload Summary</div>
+            <div style="display:flex; gap:8px;">
+                <a class="btn back" href="/home"><i class="fas fa-home"></i> Back to dashboard</a>
+            </div>
+        </div>
+
+        <% (results || []).forEach((r, idx) => { %>
+            <div class="card">
+                <div class="row">
+                    <i class="fas fa-file" style="color:#6b7280"></i>
+                    <div class="meta">
+                        <div class="name"><%= r.fileName %></div>
+                        <div class="small"><%= (r.fileSize/ (1024*1024)).toFixed(2) %> MB</div>
+                    </div>
+                    <% if (r.txStatus === 'confirmed') { %>
+                        <span class="badge ok"><i class="fas fa-check"></i> Confirmed</span>
+                    <% } else if (r.txStatus === 'pending') { %>
+                        <span class="badge" style="background: rgba(99,102,241,0.12); color:#4f46e5"><i class="fas fa-spinner fa-spin"></i> Pending</span>
+                    <% } else { %>
+                        <span class="badge warn"><i class="fas fa-exclamation-triangle"></i> Failed</span>
+                    <% } %>
+                </div>
+                <div class="grid">
+                    <div>IPFS: <span class="code"><%= r.ipfsHash || '—' %></span></div>
+                    <div>TX Hash: <span class="code"><%= r.txHash || '—' %></span></div>
+                    <div>Block: <strong><%= r.blockNumber || '—' %></strong></div>
+                    <div>Gas: <strong><%= r.gasUsed || '—' %></strong></div>
+                    <div>Network: <strong><%= r.networkName || 'Unknown' %></strong></div>
+                    <div>Wallet: <strong><%= r.userAddress || '—' %></strong></div>
+                </div>
+                <% if (r.txError) { %>
+                    <div class="small" style="margin-top:8px; color:#dc2626">Error: <%= r.txError %></div>
+                <% } %>
+            </div>
+        <% }) %>
+
+        <div style="margin-top: 16px;">
+            <a class="btn" href="/home"><i class="fas fa-upload"></i> Upload more files</a>
+        </div>
+    </div>
+</body>
+</html>
+
+

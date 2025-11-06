@@ -4,127 +4,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeBox - Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="home.css">
+    <title>SafeBox — Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --bg:#070a13; --panel: rgba(255,255,255,0.06); --panel-strong: rgba(255,255,255,0.12); --text:#e6eaf3; --muted:#a6b0c3; --primary:#6aa9ff; --primary-strong:#4d8dff; --accent:#7cf5c2; --ring: rgba(108,170,255,.35); --glow: 0 10px 30px rgba(106,169,255,.25); }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{margin:0;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:radial-gradient(1200px 800px at 10% -10%, rgba(77,141,255,.15), transparent 60%),radial-gradient(900px 600px at 100% 0%, rgba(124,245,194,.12), transparent 60%),var(--bg);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        a{color:inherit;text-decoration:none}
+        .container{width:100%;max-width:1120px;margin:0 auto;padding:0 16px}
+        /* Header */
+        .site-header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(8px);background:linear-gradient(180deg, rgba(7,10,19,.75), rgba(7,10,19,.35) 60%, transparent);border-bottom:1px solid rgba(255,255,255,.06)}
+        .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+        .brand{display:inline-flex;align-items:center;gap:10px;font-weight:800}
+        .brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary-strong),#2a6bff);box-shadow:var(--glow)}
+        .nav-links{display:none;gap:20px;color:var(--muted)}
+        @media(min-width:900px){.nav-links{display:flex}}
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-weight:600;color:var(--text);background:var(--panel);border:1px solid rgba(255,255,255,.08);transition:transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+        .btn:hover{transform:translateY(-1px);box-shadow:var(--glow);border-color:rgba(255,255,255,.14)}
+        .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-strong));border-color:transparent}
+        .badge{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--muted);font-weight:600;font-size:12px}
+        /* Page */
+        .hero{padding:32px 0 8px}
+        .dashboard-title{margin:0 0 6px;font-size:28px}
+        .dashboard-subtitle{margin:0;color:var(--muted)}
+        .status{margin:16px 0;display:none}
+        .status.show{display:block;padding:12px 14px;border-radius:12px;background:rgba(77,141,255,.08);border:1px solid rgba(77,141,255,.25)}
+        /* Stats */
+        .stats-grid{display:grid;gap:12px;grid-template-columns:repeat(2,1fr);margin:18px 0 24px}
+        @media(min-width:900px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+        .stat-card{padding:18px;border-radius:14px;background:var(--panel);border:1px solid rgba(255,255,255,.12)}
+        .stat-number{font-size:24px;font-weight:800}
+        .stat-label{color:var(--muted);font-size:13px}
+        /* Content grid */
+        .grid{display:grid;gap:16px}
+        @media(min-width:1000px){.grid{grid-template-columns:1fr 1.2fr}}
+        .card{padding:18px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.14)}
+        .section-title{margin:0 0 10px;font-size:18px}
+        /* Upload */
+        .upload-area{display:grid;place-items:center;gap:10px;padding:22px;border-radius:14px;border:2px dashed rgba(255,255,255,.18);background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));cursor:pointer;transition:border-color .2s ease, background .2s ease}
+        .upload-area:hover{border-color:rgba(255,255,255,.28);background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03))}
+        .upload-area .upload-text{color:var(--muted);text-align:center}
+        .upload-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+        .upload-actions .note{color:var(--muted);font-size:12px}
+        .file-input{display:none}
+        .progress{margin-top:10px;width:100%;max-width:520px;height:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+        .progress .bar{height:100%;width:0;background:linear-gradient(135deg,var(--primary),var(--primary-strong))}
+        /* Search and list */
+        .files-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+        .search{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px 10px}
+        .search input{background:transparent;border:none;color:var(--text);outline:none;min-width:160px}
+        .file-list{display:grid;gap:10px;margin-top:12px;max-height:60vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.35) transparent;padding-right:6px}
+        .file-list::-webkit-scrollbar{width:8px}
+        .file-list::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:8px}
+        .file-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:8px}
+        .file-list:hover::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35)}
+        .file-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-radius:12px;background:var(--panel);border:1px solid rgba(255,255,255,.12)}
+        .file-actions{display:flex;gap:8px}
+        .action-btn{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);cursor:pointer}
+        .empty{color:var(--muted);text-align:center;padding:24px}
+        /* Footer */
+        .subfooter{border-top:1px solid rgba(255,255,255,.08);padding:18px 0 28px;color:var(--muted);text-align:center;margin-top:24px}
+        /* Animations */
+        .reveal{opacity:0;transform:translateY(8px);animation:reveal .5s ease forwards}
+        @keyframes reveal{to{opacity:1;transform:none}}
+    </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="logo">SafeBox</div>
-            <div class="nav-right">
-                <div class="user-info">
-                    <div class="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <span id="userAddress">Loading...</span>
+    <header class="site-header">
+        <div class="container">
+            <nav class="nav" aria-label="Primary">
+                <a class="brand" href="/"><span class="brand-mark"><i class="fa-solid fa-vault" style="color:#fff"></i></span><span>SafeBox</span></a>
+                <div class="nav-links">
+                    <span class="badge"><i class="fa-regular fa-circle-user"></i> <span id="userAddress">Loading...</span></span>
+                    <a href="/logout" class="btn"><i class="fas fa-right-from-bracket"></i> Logout</a>
                 </div>
-                <a href="/logout" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Logout
-                </a>
-            </div>
-        </nav>
+            </nav>
+        </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">Welcome to Your SafeBox</h1>
-            <p class="dashboard-subtitle">Manage your secure, decentralized files</p>
-        </div>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 class="dashboard-title">Welcome to your SafeBox</h1>
+                <p class="dashboard-subtitle">Manage your secure, decentralized files</p>
+                <div id="statusMessage" class="status"></div>
+            </div>
+        </section>
 
-        <!-- Status Messages -->
-        <div id="statusMessage" class="status-message"></div>
+        <section>
+            <div class="container">
+                <div class="stats-grid reveal">
+                    <div class="stat-card"><div class="stat-number" id="totalFiles">0</div><div class="stat-label">Total Files</div></div>
+                    <div class="stat-card"><div class="stat-number" id="totalSize">0 MB</div><div class="stat-label">Storage Used</div></div>
+                    <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Encrypted</div></div>
+                    <div class="stat-card"><div class="stat-number" id="lastUpload">Never</div><div class="stat-label">Last Upload</div></div>
+                </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-file"></i>
+                <div class="grid">
+                    <div class="card reveal">
+                        <h2 class="section-title">Upload new files</h2>
+                        <form id="uploadForm" action="/fileUpload" method="POST" enctype="multipart/form-data">
+                            <div class="upload-area" id="uploadArea" role="button" aria-label="File upload dropzone">
+                                <div class="upload-icon" id="uploadIcon"><i class="fas fa-cloud-upload-alt" style="color:var(--primary);font-size:24px"></i></div>
+                                <div class="upload-text" id="uploadText"><strong>Drop files here</strong> or use the button below<br><small>Select multiple files and set custom names</small></div>
+                                <div class="upload-actions">
+                                    <label for="fileInput" class="btn btn-primary"><i class="fas fa-folder-open"></i> Browse files</label>
+                                    <span class="note">Max 100MB per file • Drag & drop supported</span>
+                                </div>
+                                <input type="file" name="files" id="fileInput" class="file-input" multiple required>
+                                <div id="uploadProgress" class="progress" style="display:none"><div class="bar"></div></div>
+                            </div>
+                            <div id="selectedFilesContainer" style="margin-top: 1.5rem; display: none;"></div>
+                            <button type="submit" class="btn btn-primary" id="uploadBtn" disabled style="margin-top: 1rem;"><i class="fas fa-upload"></i> Upload Files</button>
+                        </form>
                     </div>
-                </div>
-                <div class="stat-number" id="totalFiles">0</div>
-                <div class="stat-label">Total Files</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                </div>
-                <div class="stat-number" id="totalSize">0 MB</div>
-                <div class="stat-label">Storage Used</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                </div>
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Encrypted</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-                <div class="stat-number" id="lastUpload">Never</div>
-                <div class="stat-label">Last Upload</div>
-            </div>
-        </div>
-
-        <!-- Content Grid -->
-        <div class="content-grid">
-            <!-- Upload Section -->
-            <div class="upload-section">
-                <h2 class="section-title">Upload New File</h2>
-                <form id="uploadForm" action="/fileUpload" method="POST" enctype="multipart/form-data">
-                    <div class="upload-area" id="uploadArea">
-                        <div class="upload-icon" id="uploadIcon">
-                            <i class="fas fa-cloud-upload-alt"></i>
+                    <div class="card reveal">
+                        <div class="files-header">
+                            <h2 class="section-title">Your files</h2>
+                            <div class="search">
+                                <i class="fas fa-search" style="color:var(--muted)"></i>
+                                <input type="text" placeholder="Search files..." id="searchInput">
+                                <button type="button" id="searchBtn" class="btn btn-primary" onclick="filterSearchAndDisplay()">Search</button>
+                            </div>
                         </div>
-                        <div class="upload-text" id="uploadText">
-                            <strong>Click to upload</strong> or drag and drop<br>
-                            <small>Supports all file types up to 100MB</small>
+                        <div class="file-list" id="fileList">
+                            <div class="empty">
+                                <i class="fas fa-folder-open" style="font-size: 22px; margin-bottom: 6px; color:var(--muted)"></i>
+                                <div>No files uploaded yet</div>
+                                <div style="font-size: 13px">Upload your first file to get started</div>
+                            </div>
                         </div>
-                        <input type="file" name="file" id="fileInput" class="file-input" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
-                        <i class="fas fa-upload"></i>
-                        Upload File
-                    </button>
-                </form>
-            </div>
-
-            <!-- Files Section -->
-            <div class="files-section">
-                <div class="files-header">
-                    <h2 class="section-title">Your Files</h2>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search files..." id="searchInput">
-                        <button type="submit" id="searchBtn" class="btn btn-primary "
-                            onclick="filterSearchAndDisplay()"> Search</button>
-                    </div>
-                </div>
-                <div class="file-list" id="fileList">
-                    <div style="text-align: center; color: var(--gray); padding: 2rem;">
-                        <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <p>No files uploaded yet</p>
-                        <p style="font-size: 0.875rem;">Upload your first file to get started</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
+
+    <div class="subfooter"><div class="container">&copy; 2024 SafeBox</div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script>
@@ -157,27 +176,57 @@
             fileInput.click();
         });
         fileInput.addEventListener("change", () => {
-            let file = fileInput.files[0];
-            console.log(file);
-            if (file) {
-                try {
-                    uploadBtn.disabled = false;
-                    if (!uploadBtn.disabled) console.log("Button turned on");
-                } catch (error) {
-                    console.error("Error in the upload button");
-                }
+            const files = Array.from(fileInput.files || []);
+            const container = document.getElementById("selectedFilesContainer");
+            container.innerHTML = "";
+            if (files.length > 0) {
+                uploadBtn.disabled = false;
                 let uploadIcon = document.getElementById("uploadIcon");
                 let uploadText = document.getElementById("uploadText");
-                uploadIcon.innerHTML = `<div class="upload-icon">
-                    <i class="fas fa-check-circle" style="color: green;"></i>
-                        </div>`;
-                uploadText.innerHTML = `<div class="upload-text">
-                    <strong>File Selected</strong><br>
-                    <small>${file.name}</small>
-                    </div>`;
-                console.log(file);
-            }
+                uploadIcon.innerHTML = `<div class="upload-icon"><i class="fas fa-check-circle" style="color: green;"></i></div>`;
+                uploadText.innerHTML = `<div class=\"upload-text\"><strong>${files.length} file(s) selected</strong><br><small>Review names below before uploading</small></div>`;
 
+                // Build list UI with custom name inputs
+                const list = document.createElement("div");
+                list.style.cssText = "display: grid; gap: 8px;";
+                files.forEach((f, idx) => {
+                    const row = document.createElement("div");
+                    row.style.cssText = "display:flex; align-items:center; gap: 10px; background:#f8fafc; border:1px solid #e5e7eb; padding:10px; border-radius:8px;";
+
+                    const icon = document.createElement("i");
+                    icon.className = "fas fa-file";
+                    icon.style.cssText = "color:#6b7280;";
+
+                    const meta = document.createElement("div");
+                    meta.style.cssText = "flex:1; display:flex; flex-direction:column;";
+                    const nameEl = document.createElement("div");
+                    nameEl.textContent = f.name;
+                    nameEl.style.cssText = "font-size: 0.9rem; color:#374151;";
+                    const sizeEl = document.createElement("div");
+                    sizeEl.textContent = `${(f.size/(1024*1024)).toFixed(2)} MB`;
+                    sizeEl.style.cssText = "font-size: 0.8rem; color:#6b7280;";
+                    meta.appendChild(nameEl);
+                    meta.appendChild(sizeEl);
+
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.name = "names[]";
+                    input.value = f.name;
+                    input.placeholder = "Custom name";
+                    input.style.cssText = "flex:0 0 320px; max-width:100%; padding:8px 10px; border:1px solid #e5e7eb; border-radius:8px;";
+
+                    row.appendChild(icon);
+                    row.appendChild(meta);
+                    row.appendChild(input);
+                    list.appendChild(row);
+                });
+
+                container.style.display = "block";
+                container.appendChild(list);
+            } else {
+                uploadBtn.disabled = true;
+                container.style.display = "none";
+            }
         });
         let fileNames;
         let fetchedData;
@@ -233,10 +282,10 @@
                         <h4>${file}</h4>
                         </div>
                         <div class="file-actions">
-                            <button class="action-btn view" onclick="viewFile(${file})">
+                            <button class="action-btn view" onclick="viewFile('${file}')">
                                 <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="action-btn delete" onclick="deleteFile(${file})">
+                                <button class="action-btn delete" onclick="deleteFile('${file}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -255,11 +304,152 @@
             displayFiles(matchedFiles);
         }
 
+        async function viewFile(fileName) {
+            try {
+                // Show loading indicator
+                const statusMessage = document.getElementById("statusMessage");
+                statusMessage.innerHTML = '<div style="padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: 8px; margin: 1rem 0;"><i class="fas fa-spinner fa-spin"></i> Loading file...</div>';
+                statusMessage.style.display = 'block';
+
+                // Fetch file from server
+                const response = await fetch(`/viewFile?fileName=${encodeURIComponent(fileName)}`, {
+                    credentials: 'include', // send session cookie
+                    cache: 'no-store',      // prevent 304 from cache
+                    headers: { 'Accept': '*/*' }
+                });
+                
+                if (!response.ok) {
+                    // Check if response is JSON or HTML
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to load file');
+                    } else {
+                        // If it's HTML (likely a redirect or error page)
+                        if (response.status === 401 || response.status === 302) {
+                            throw new Error('Session expired. Please login again.');
+                        }
+                        const text = await response.text();
+                        throw new Error(`Server returned an error (${response.status}). Please check if you are logged in.`);
+                    }
+                }
+
+                // Get file extension to determine how to display
+                const ext = fileName.toLowerCase().split('.').pop();
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                // Handle different file types
+                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                    // Display image in modal
+                    showImageModal(fileName, url);
+                } else if (ext === 'pdf') {
+                    // Open PDF in new tab
+                    window.open(url, '_blank');
+                } else if (['txt', 'json', 'html', 'css', 'js'].includes(ext)) {
+                    // Display text content in modal
+                    const text = await blob.text();
+                    showTextModal(fileName, text);
+                } else {
+                    // Download other file types
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+
+                statusMessage.style.display = 'none';
+            } catch (error) {
+                console.error('Error viewing file:', error);
+                const statusMessage = document.getElementById("statusMessage");
+                statusMessage.innerHTML = `<div style="padding: 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; margin: 1rem 0; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                statusMessage.style.display = 'block';
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function showImageModal(fileName, imageUrl) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+            
+            // Create modal content
+            const content = document.createElement('div');
+            content.style.cssText = 'position: relative; max-width: 90%; max-height: 90%;';
+            
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.cssText = 'max-width: 100%; max-height: 90vh; border-radius: 8px;';
+            img.alt = fileName;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.style.cssText = 'position: absolute; top: -40px; right: 0; background: rgba(255,255,255,0.2); border: none; color: white; font-size: 24px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;';
+            closeBtn.onclick = () => {
+                document.body.removeChild(modal);
+                URL.revokeObjectURL(imageUrl);
+            };
+            
+            content.appendChild(img);
+            content.appendChild(closeBtn);
+            modal.appendChild(content);
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                    URL.revokeObjectURL(imageUrl);
+                }
+            };
+            
+            document.body.appendChild(modal);
+        }
+
+        function showTextModal(fileName, textContent) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+            
+            // Create modal content
+            const content = document.createElement('div');
+            content.style.cssText = 'background: white; border-radius: 12px; padding: 2rem; max-width: 80%; max-height: 80%; overflow: auto; position: relative;';
+            
+            const title = document.createElement('h2');
+            title.textContent = fileName;
+            title.style.cssText = 'margin: 0 0 1rem 0; color: #1f2937;';
+            
+            const pre = document.createElement('pre');
+            pre.textContent = textContent;
+            pre.style.cssText = 'background: #f3f4f6; padding: 1rem; border-radius: 8px; overflow: auto; max-height: 60vh; font-family: monospace; white-space: pre-wrap; word-wrap: break-word;';
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; background: #ef4444; border: none; color: white; font-size: 18px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;';
+            closeBtn.onclick = () => {
+                document.body.removeChild(modal);
+            };
+            
+            content.appendChild(closeBtn);
+            content.appendChild(title);
+            content.appendChild(pre);
+            modal.appendChild(content);
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+            
+            document.body.appendChild(modal);
+        }
+
         async function initContract() {
             const contractData = await fetch("contractAddress.json");
             const contractJson = await contractData.json();
             let contractAddress = contractJson.Address;
-            const abiResponse = await fetch("abi/UserStorage.json");
+            const abiResponse = await fetch("abi/SafeBoxStorage.json");
             const abiData = await abiResponse.json();
             let contractABI = abiData.abi;
 
